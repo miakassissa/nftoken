@@ -1948,13 +1948,12 @@
         }
       },
       "links": {},
-      "address": "0x34C7F87f8B8525B4817d37c99eA35ca376aa31CA",
-      "transactionHash": "0x90eb2c695c42ad7a420bd690a7a68f5456032dd34de353268bb6c0f3b9358437"
+      "address": "0x59d2A78F85c7A6c97c3bFA61baA43791Dd5a7267",
+      "transactionHash": "0x646d8b59b6d931feefe1fa2aaa7d8b56de168063144d85263c6d381db1bda8de"
     }
   },
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-03-03T04:30:11.336Z",
-  "networkType": "ethereum",
+  "updatedAt": "2020-03-03T17:23:26.004Z",
   "devdoc": {
     "methods": {
       "approve(address,uint256)": {

@@ -32,17 +32,45 @@ class App extends Component {
       const address = networkData.address;
       const abi = Color.abi;
       const contract = new web3.eth.Contract(abi, address);
-      console.log(contract);
+      // console.log(contract);
+      this.setState({contract })
+      const totalSupply = await contract.methods.totalSupply().call()
+      this.setState({ totalSupply })
+
+      // Charger les Couleurs
+      for (var i=1; i<= totalSupply; i++) {
+        const color = await contract.methods.colors(i-1).call()
+        this.setState({
+          colors: [...this.state.colors, color]
+        })
+      }
+      // See if colors are get well
+      // console.log(this.state.colors)
     } else {
       // S'affiche malheureusement dans tous les cas. *** A REVOIR ***
       // window.alert("Le Smart Contract associé n'a pas été déployé sur le réseau détecté")
     }
   }
 
+  mint = (color) => {
+    // console.log(color)
+
+    // send() and not call() because we're writing to the Blockchain
+    this.state.contract.methods.mint(color).send({from: this.state.account})
+    .once('receipt', (receipt) => {
+      this.setState({
+        colors: [...this.state.colors, color]
+      })
+    })
+  }
+
   constructor(props) {
     super(props);
     this.state = { 
-      account: ''
+      account: '',
+      contract: null,
+      totalSupply: 0,
+      colors: []
     }
   }
 
@@ -70,7 +98,24 @@ class App extends Component {
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
-                { /* FORM GOES HERE! */ }
+                 <h1>Issue Token</h1>
+                  <form onSubmit={(event) => {
+                    event.preventDefault()
+                    const color = this.color.value
+                    this.mint(color)
+                  }}>
+                    <input
+                      type="text"
+                      className="form-control mb-1"
+                      placeholder="e.g. #000000"
+                      ref={(input) => { this.color = input }}
+                    />
+                    <input
+                      type="submit"
+                      className="btn btn-block btn-primary"
+                      value="MiNT"
+                    />
+              </form> 
               </div>
               <hr />
               <div className="content mr-auto ml-auto">
@@ -83,7 +128,10 @@ class App extends Component {
                 </a>
                 <h1>Tokenized. Decentralized.</h1>
                 <p>
-                  Edit <code>src/components/App.js</code> and save to reload.
+                  {/* Edit <code>src/components/App.js</code> and save to reload. */}
+                  
+                  The  <code>BLOCKCHAIN</code> symbolizes a shift in POWER  
+                  <code> from the CENTER to the EDGES</code>.
                 </p>
                 <a
                   className="App-link"
@@ -95,14 +143,23 @@ class App extends Component {
                   <u>
                     <b>NOW! </b>
                   </u>
-                </a>
-              </div>
-            </main>
-            <div className="content mr-auto ml-auto"></div>
-            { /* FORM GOES HERE! */ }
+                </a>              
+                
+              </div>              
+            </main>   
+              
 
           </div>
           <hr />
+          <div className="row text-center">
+            { this.state.colors.map((color, key) => {
+              return(<div key={key} className="col-md-3 mb-3">
+                <div className="token" style={{ backgroundColor: color}}></div>
+                <div>{color}</div>
+              </div>
+              )
+            })}
+          </div>
         </div>
       </div>
     );
